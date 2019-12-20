@@ -29,6 +29,7 @@
   },
   "bugs": "https://github.com/nestjsplus/cookies/issues",
   "dependencies": {
+    "fastify": "^2.11.0",
     "lodash": "^4.17.15",
     "reflect-metadata": "0.1.12",
     "rxjs": "^6.3.3"

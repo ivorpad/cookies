@@ -9,8 +9,8 @@ import {
   CallHandler,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { Response } from 'express';
-
+import { FastifyReply, HTTPInjectResponse } from 'fastify';
+console.log('testing')
 @Injectable()
 export class SetCookiesInterceptor implements NestInterceptor {
   intercept(
@@ -18,7 +18,7 @@ export class SetCookiesInterceptor implements NestInterceptor {
     next: CallHandler,
   ): Promise<Observable<any>> {
     const ctx = context.switchToHttp();
-    const response = ctx.getResponse<Response>();
+    const response = ctx.getResponse<FastifyReply<HTTPInjectResponse>>();
     const request = ctx.getRequest();
     const handler = context.getHandler();
     const options = Reflect.getMetadata('cookieOptions', handler);
