@@ -6,7 +6,6 @@ import {
   CallHandler,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { Response } from 'express';
 
 @Injectable()
 export class ClearCookiesInterceptor implements NestInterceptor {
@@ -15,7 +14,7 @@ export class ClearCookiesInterceptor implements NestInterceptor {
     next: CallHandler,
   ): Promise<Observable<any>> {
     const ctx = context.switchToHttp();
-    const response = ctx.getResponse<Response>();
+    const response = ctx.getResponse();
     const handler = context.getHandler();
     const cookieNames = [].concat(Reflect.getMetadata('cookieNames', handler));
     const res$ = next.handle();

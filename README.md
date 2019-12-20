@@ -1,25 +1,7 @@
-<h1 align="center"></h1>
-
-<div align="center">
-  <a href="http://nestjs.com/" target="_blank">
-    <img src="https://nestjs.com/img/logo_text.svg" width="150" alt="Nest Logo" />
-  </a>
-</div>
-
-<h3 align="center">Decorators for Managing Cookies with NestJS</h3>
-
-<div align="center">
-   <img src="https://img.shields.io/badge/license-MIT-brightgreen.svg" alt="License" />
-  <img src="https://badge.fury.io/js/%40nestjsplus%2Fcookies.svg" alt="npm version" height="18">
-  <a href="https://nestjs.com" target="_blank">
-    <img src="https://img.shields.io/badge/built%20with-NestJs-red.svg" alt="Built with NestJS">
-  </a>
-</div>
-
 ### Installation
 
 ```bash
-npm install @nestjsplus/cookies
+npm install @ivorpad/nestjs-cookies-fastify
 ```
 
 ### Motivation
@@ -66,12 +48,10 @@ export class AppController {
 ```
 
 ### Reading Cookies
-Reading cookies requires the [cookie-parser](https://github.com/expressjs/cookie-parser#readme)
-package to be installed.  [See here for details](#cookie-parser).
-Reading **signed cookies** requires that the `CookieParser` be configured with a
-[signing secret](https://github.com/expressjs/cookie-parser#cookieparsersecret-options).
+Reading cookies requires the [fastify-cookie](https://github.com/fastify/fastify-cookie)
+package to be installed.
 
-#### Regular (non-signed) Cookies
+#### Cookies
 Use the `@Cookies()` route parameter decorator to get "regular" cookies.
 ```typescript
 @Get('get')
@@ -83,26 +63,6 @@ get(@Cookies() cookies): string {
 
 This will bind an array of **all** (non-signed) cookies to the `cookies` parameter.
 See [below](#accessing-specific-named-cookies) to access a named cookie.
-
-#### Signed Cookies
-Use the `@SignedCookies()` route parameter decorator to get signed cookies.
-```typescript
-@Get('getSigned')
-getSigned(@SignedCookies() cookies) {
-  console.log('signed cookies: ', cookies);
-}
-```
-
-As with `@Cookies()`, this will bind an array of **all** signed cookies to the `cookies`
-parameter.  Access individual signed cookies [as described below](#accessing-specific-named-cookies).
-
-#### Accessing Specific (Named) Cookies
-Pass the name of a specific cookie in the `@Cookies()` or `@SignedCookies()` decorator
-to access a specific cookie:
-
-```typescript
-get(@SignedCookies('cookie1') cookie1) { ... }
-```
 
 ### Setting Cookies
 Use the `@SetCookies()` route handler *method decorator* to set cookies.
@@ -195,8 +155,7 @@ interface CookieSettings {
 ```
 If `options` are provided for a cookie, they completely replace any options
 specified in the `@SetCookies()` decorator.  If omitted for a cookie, they default
-to options specified on the `@SetCookies()` decorator, or [Express's default cookie settings](https://expressjs.com/en/api.html#res.cookie)
-if none were set.
+to options specified on the `@SetCookies()` decorator.
 
 #### CookieOptions
 Cookie options may be set at the method level (`@SetCookies()`), providing a set of
@@ -264,51 +223,6 @@ kill() {
   return { message: 'cookies killed!' };
 }
 ```
-
-### Restrictions
-#### Express Only
-These decorators currently only work with Nest applications running on `@platform-express`.  Fastify support is not
-currently available.
-
-#### Cookie Parser
-Note that reading cookies depends on the standard Express [cookie-parser]() package.  Be sure to install it
-and configure it in your app.  For example:
-
-```bash
-npm install cookie-parser
-```
-and in your `main.ts` file:
-```typescript
-import { NestFactory } from '@nestjs/core';
-import { NestExpressApplication } from '@nestjs/platform-express';
-import { AppModule } from './app.module';
-
-import * as CookieParser from 'cookie-parser';
-
-async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
-
-  app.use(CookieParser('secret'));
-
-  await app.listen(3000);
-}
-bootstrap();
-```
-
-#### Decorators Can't Access `this`
-Note that decorators have access to the `class` (Controller), but not the instance.  This means that, for example,
-if you want to pass a variable to a `SetCookies()` decorator, you should pass a variable set in the outer scope of
-the file (e.g., a `const` above the controller class definition), as opposed to a property on the controller class.
-
-See [the controller in the test folder](https://github.com/nestjsplus/cookies/blob/master/test/src/app.controller.ts) for an example.
-
-## Change Log
-
-See [Changelog](CHANGELOG.md) for more information.
-
-## Contributing
-
-Contributions welcome! See [Contributing](CONTRIBUTING.md).
 
 ## Author
 
